@@ -15,7 +15,8 @@ use App\Http\Controllers\Api\{
     VerificationController,
     WalletController,
     WebhookController,
-    HomeController
+    HomeController,
+    LoginController
 
 };
 /*
@@ -41,10 +42,15 @@ Route::group(['prefix' => 'coin'], function () {
     Route::get('/user-wallets', [WalletController::class, 'wallets']);//get the user wallet id with crypto details
     Route::post('/wallet/generate', [WalletController::class, 'walletGenerate']);
     Route::get('/', [HomeController::class, 'index']);
-    Route::get('/running-trades', [TradeController::class, 'runningTrades']);
+    Route::get('/running-trades', [TradeController::class, 'runningTrades']);//navigate to the details page with the token!!
     Route::get('/completed-trades', [TradeController::class, 'completedTrades']);
     Route::get('/fund-history', [HomeController::class, 'fundHistory']);
-    Route::get('/transactions/{code?}', [HomeController::class, 'transaction']);
+    Route::get('/user-transactions', [HomeController::class, 'transaction']);
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/buy-currencies/buy-trade-request', [BuyCurrenciesController::class, 'buyTradeRqst']); //able to work when a user click the buy button
+    Route::post('/buy-currencies/send-trade-request', [BuyCurrenciesController::class, 'sendTradeRqst']); // when user has filled the form and submited
+    Route::get('/buy-currencies/trade-details/{hash_slug}', [BuyCurrenciesController::class, 'tradeDetails']);
+
 
     Route::prefix('advertisements')->group(function () {
         Route::post('/advertisements', [AdvertismentController::class, 'create']); //create an advert

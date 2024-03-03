@@ -69,7 +69,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'user', 'as' => 'user.'], fu
         Route::post('/buy/trade-request/send', 'User\BuyCurrenciesController@sendTradeRqst')->name('buyCurrencies.trade.send');
         Route::get('/trade/details/{hash_slug}', 'User\BuyCurrenciesController@tradeDetails')->name('buyCurrencies.tradeDetails');
 
-        //
+        //Sell Currencies
         Route::get('/sell/{currencyCode?}/{currencyId?}', 'User\SellCurrenciesController@index')->name('sellCurrencies.list');
         Route::get('/sell/trade/request/{advertiseId}', 'User\SellCurrenciesController@sellTradeRqst')->name('sellCurrencies.tradeRqst');
         Route::post('/sell/trade-request/send', 'User\SellCurrenciesController@sendTradeRqst')->name('sellCurrencies.trade.send');

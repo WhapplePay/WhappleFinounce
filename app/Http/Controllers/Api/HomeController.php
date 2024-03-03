@@ -48,25 +48,24 @@ class HomeController extends Controller
         return response()->json($data);
     }
 
-    public function transactions($code = null)
-{
-    $transactions = $this->user->transactions()->orderBy('id', 'DESC')
-        ->when($code != null, function ($query) use ($code) {
-            return $query->where('code', $code);
-        })
-        ->paginate(config('basic.paginate'));
-
-    return response()->json(['transactions' => $transactions]);
-}
-
-public function fundHistory()
-{
-    $funds = Fund::where('user_id', $this->user->id)
-        ->where('status', '!=', 0)
-        ->orderBy('id', 'DESC')
-        ->with('gateway')
-        ->paginate(config('basic.paginate'));
-
-    return response()->json(['funds' => $funds]);
-}
+    public function transaction(Request $request)
+    {
+        $transactions = Transaction::where('user_id', $request->user_id)
+            ->orderBy('id', 'DESC')
+            ->get();
+    
+        return response()->json(['transactions' => $transactions]);
+    }
+    
+    public function fundHistory(Request $request)
+    {
+        $funds = Fund::where('user_id', $request->user_id)
+            ->where('status', '!=', 0)
+            ->orderBy('id', 'DESC')
+            ->with('gateway')
+            ->paginate(config('basic.paginate'));
+    
+        return response()->json(['data' => $funds->items()]); 
+    }
+    
 }
