@@ -185,20 +185,26 @@
                                         <p id="counter" class="theme-color"></p>
                                         <script>getCountDown("counter", <?php echo e(\Carbon\Carbon::parse($trade->time_remaining)->diffInSeconds()); ?>);</script>
                                     <?php endif; ?>
-                                    <?php if($trade->status == 0 && $trade->type == 'sell'): ?>
-                                        <div class="d-flex mb-4">
-                                            <button class="btn-custom w-50 mx-1 dispute-btn"
-                                                    data-bs-target="#cancelModal"
-                                                    data-bs-toggle="modal">
-                                                <i class="fal fa-times-circle"></i> <?php echo app('translator')->get('Cancel'); ?>
-                                            </button>
-                                            <button class="btn-custom w-50 mx-1 release-btn" data-bs-target="#paidModal"
-                                                    data-bs-toggle="modal">
+                                    <?php if($trade->type == 'sell'): ?>
+                                    <div class="d-flex mb-4">
+                                        <button class="btn-custom w-50 mx-1 dispute-btn" data-bs-target="#cancelModal" data-bs-toggle="modal">
+                                            <i class="fal fa-times-circle"></i> <?php echo app('translator')->get('Cancel'); ?>
+                                        </button>
+                                        <?php if($trade->status == 1): ?> 
+                                            
+                                        <?php elseif(!in_array($trade->status, [0,1,5]) &&$hasRunningTrades): ?>
+                                            <p>Another trade is ongoing. Please be patient</p>
+                                        <?php elseif(!$hasRunningTrades ): ?>
+                                            <button class="btn-custom w-50 mx-1 release-btn" data-bs-target="#paidModal" data-bs-toggle="modal">
                                                 <i class="fal fa-check-circle"></i> <?php echo app('translator')->get('I have paid'); ?>
                                             </button>
-                                        </div>
-                                    <?php endif; ?>
-                                    <?php if($trade->status == 1 && $trade->type == 'buy'): ?>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php else: ?>
+                                    <p>You cannot place a new trade for the same advertisement while there is another running trade.</p>
+                                <?php endif; ?>
+                                
+                                <?php if($trade->status == 1 && $trade->type == 'buy'): ?>
                                         <div class="d-flex mb-4">
                                             <button class="btn-custom w-50 mx-1 dispute-btn"
                                                     data-bs-target="#disputeModal"
@@ -526,8 +532,15 @@
         </div>
     </div>
 <?php $__env->stopPush(); ?>
+<?php $__env->startPush('style'); ?>
+    <link rel="stylesheet" href="<?php echo e(asset('css/app.css')); ?>">
+<?php $__env->stopPush(); ?>
+
 <?php $__env->startPush('script'); ?>
     <script>
+          const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
         'use strict';
         let pushChatArea = new Vue({
             el: "#pushChatArea",

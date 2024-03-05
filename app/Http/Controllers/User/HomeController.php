@@ -363,6 +363,16 @@ class HomeController extends Controller
         $crypto = Currency::findOrFail($request->currencyId);
         $user = auth()->user();
         $userWallet = Wallet::where('user_id', $user->id)->where('crypto_currency_id', $crypto->id)->firstOrFail();
+      
+        $runningTradesWithImportantConditions = Trade::where('owner_id', $user->id)
+        ->whereIn('status', [1, 5]) 
+        ->count();
+
+        if ($runningTradesWithImportantConditions >= 1) {
+        session()->flash('error', 'You cannot withdraw with more than 1 running trades where the buyer has paid, is in dispute, or canceled.');
+        return redirect()->back();
+        }
+
 
         if ($crypto->withdraw_type == 0) {
             $charge = $request->withdrawAmount * $crypto->withdraw_charge / 100;
@@ -416,16 +426,19 @@ class HomeController extends Controller
             "link" => route('admin.user.withdrawal', $user->id),
             "icon" => "fa fa-money-bill-alt "
         ];
-        $firebaseAction = route('admin.user.withdrawal', $user->id);
-        $this->adminPushNotification('PAYOUT_REQUEST', $msg, $action);
-        $this->adminFirebasePushNotification('PAYOUT_REQUEST', $msg, $firebaseAction);
+        // $firebaseAction = route('admin.user.withdrawal', $user->id);
+        // $this->adminPushNotification('PAYOUT_REQUEST', $msg, $action);
+        // $this->adminFirebasePushNotification('PAYOUT_REQUEST', $msg, $firebaseAction);
         session()->flash('success', 'Payout request Successfully Submitted. Wait For Confirmation.');
 
         return redirect()->route('user.payout.history');
     }
 
+    
+
     public function depositHistory(Request $request)
     {
+
         $search = $request->all();
         $dateSearch = $request->date_time;
         $date = preg_match("/^[0-9]{2,4}\-[0-9]{1,2}\-[0-9]{1,2}$/", $dateSearch);

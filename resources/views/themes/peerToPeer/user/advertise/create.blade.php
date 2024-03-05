@@ -105,7 +105,7 @@
                                             data-bs-toggle="tooltip" data-bs-placement="top"
                                             data-bs-title="@lang('The margin you want over the bitcoin market price. Use a negative value for buying or selling under the market price to attract more contacts.')"></i></label>
                                     <div class="input-group">
-                                        <input class="form-control inputPrice" type="number" step="0.001" min="0"
+                                        <input class="form-control inputPrice" type="number" step="0.005" min="0"
                                                name="price"
                                                value="{{old('price')}}" required/>
                                         <div class="input-group-prepend">

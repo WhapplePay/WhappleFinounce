@@ -68,4 +68,8 @@ class HomeController extends Controller
         return response()->json(['data' => $funds->items()]); 
     }
     
+    public function deposit(Request $request){
+
+        $data = 1;
+    }
 }

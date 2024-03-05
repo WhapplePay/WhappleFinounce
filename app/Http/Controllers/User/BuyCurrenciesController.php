@@ -103,7 +103,18 @@ class BuyCurrenciesController extends Controller
         ];
 
         $validate = Validator::make($purifiedData, $rules, $message);
+        $existingTrade = Trade::where('advertise_id', $request->advertiseId)
+        ->where('status', '!=', 4) 
+        ->where('status', '!=', 3)
+        ->where('status', '!=', 6)
+        ->where('status', '!=', 7)
+        ->where('status', '!=', 8) 
+        ->first();
 
+    if ($existingTrade) {
+        session()->flash('error', 'Another user has already placed a trade on this advertisement. Please choose another one.');
+        return redirect()->back();
+    }
         if ($validate->fails()) {
             return back()->withInput()->withErrors($validate);
         }
@@ -195,21 +206,31 @@ class BuyCurrenciesController extends Controller
                     ->orWhere('owner_id', $auth->id);
             })
             ->firstOrFail();
-
+    
+        // Check if there are other running trades for the same advertisement ID with a different user
+        $hasRunningTrades = Trade::where('advertise_id', $data['trade']->advertise_id)
+            ->where('id', '!=', $data['trade']->id)
+            ->whereIn('status', [0,1,5]) 
+            ->exists();
+        
+        $data['hasRunningTrades'] = $hasRunningTrades;
+    
         if (Auth::check() && $data['trade']->owner_id == Auth::id()) {
             $data['isAuthor'] = true;
         } else {
             $data['isAuthor'] = false;
         }
-
+    
         $data['persons'] = TradeChat::where([
             'trades_id' => $data['trade']->id,
         ])
             ->with('chatable')
             ->get()->pluck('chatable')->unique('chatable');
-
+    
         $data['configure'] = Configure::select(['trade_extra_time'])->firstOrFail();
         return view($this->theme . 'user.trade.details', $data);
     }
+    
+    
 
 }

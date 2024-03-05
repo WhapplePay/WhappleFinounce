@@ -51,7 +51,24 @@ Route::group(['prefix' => 'coin'], function () {
     Route::post('/buy-currencies/send-trade-request', [BuyCurrenciesController::class, 'sendTradeRqst']); // when user has filled the form and submited
     Route::get('/buy-currencies/trade-details/{hash_slug}', [BuyCurrenciesController::class, 'tradeDetails']);
 
+    Route::prefix('sell')->group(function () {
+        Route::get('sell-trade-request/{adId}', [SellCurrenciesController::class, 'sellTradeRqst']); //fetches data when user clickes the sell button
+        Route::post('send-trade-request', [SellCurrenciesController::class, 'sendTradeRqst']); //user filled fomr and want to place a trade
+        Route::get('gateway-info/{adsId}', [SellCurrenciesController::class, 'gatewayInfo']);
+        Route::post('gateway-info-save', [SellCurrenciesController::class, 'gatewayInfoSave']);
+        Route::put('gateway-info-update/{id}', [SellCurrenciesController::class, 'gatewayInfoUpdate']);
+        Route::post('gateway-select', [SellCurrenciesController::class, 'gatewaySelect']);
+        Route::get('fetch-payment-info', [SellCurrenciesController::class, 'fetchPaymentInfo']);
+    });
 
+    Route::group(['prefix' => 'trade'], function () {
+        Route::get('running', [TradeController::class, 'runningTrades']);
+        Route::get('completed', [TradeController::class, 'completedTrades']);
+        Route::post('cancel', [TradeController::class, 'cancelTrade']);
+        Route::post('paid', [TradeController::class, 'paidTrade']);
+        Route::post('release', [TradeController::class, 'releaseTrade']);
+        Route::post('dispute', [TradeController::class, 'disputeTrade']);
+    });
     Route::prefix('advertisements')->group(function () {
         Route::post('/advertisements', [AdvertismentController::class, 'create']); //create an advert
         Route::get('/advertisements', [AdvertismentController::class, 'getAllAdvertisements']);
@@ -63,6 +80,5 @@ Route::group(['prefix' => 'coin'], function () {
         Route::post('/feedback', [AdvertismentController::class, 'feedback']);
         Route::get('/{adId}/feedback/list', [AdvertismentController::class, 'feedbackList']);
     });
-   
-  
+
 });

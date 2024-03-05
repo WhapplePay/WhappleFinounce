@@ -102,44 +102,59 @@ class SellCurrenciesController extends Controller
             'message.required' => 'Message field is required',
             'method_id.required' => 'Payment Method field is required',
         ];
-
+    
         $validate = Validator::make($purifiedData, $rules, $message);
-
+    
         if ($validate->fails()) {
             return back()->withInput()->withErrors($validate);
         }
+        $existingTrade = Trade::where('advertise_id', $request->advertiseId)
+        ->where('status', '!=', 4) 
+        ->where('status', '!=', 3)
+        ->where('status', '!=', 6)
+        ->where('status', '!=', 7)
+        ->where('status', '!=', 8) 
+        ->first();
 
+    if ($existingTrade) {
+        session()->flash('error', 'Another user has already placed a trade on this advertisement. Please choose another one.');
+        return redirect()->back();
+    }
         $method = Gateway::where('status', 1)->findOrFail($request->method_id);
-        // $info = UserPaymentInfo::where('user_id', auth()->id())->findOrFail($request->information_id);
+    
         $information = [];
         $information[] = 'Payment Method : '.$method->name;
-        // foreach (collect($info->information)->take(2) as $inKey => $inData) {
-        //     array_push($information, $inData->label ." : ". $inData->fieldValue);
-        // }
         $information = implode('  ', $information);
-
-
+    
         $advertise = Advertisment::with(['paymentWindow'])->findOrFail($request->advertiseId);
+    
         $rate = $advertise->rate;
+    
+        // Check if $rate is zero to avoid DivisionByZeroError
+        if ($rate == 0) {
+            session()->flash('error', 'Rate cannot be zero. Please check the advertisement rate.');
+            return redirect()->back();
+        }
+    
         $receiveAmount = 1 * $request->pay / $rate;
-
+    
         $charge = $receiveAmount * config('basic.tradeCharge') / 100;
-
+    
         $check = BasicService::checkIsTradeable($advertise, $receiveAmount, $charge);
         if ($check['status'] != 'success') {
             session()->flash('error', $check['message']);
             return redirect()->back();
         }
-
+    
         if ($advertise->minimum_limit > $request->pay) {
             return back()->with('error', 'amount can not be less than trade limit');
         }
         if ($advertise->maximum_limit < $request->pay) {
-            return back()->with('error', 'amount can not be grater than trade limit');
+            return back()->with('error', 'amount can not be greater than trade limit');
         }
-
+    
         $trade = new Trade();
-
+    
         $trade->advertise_id = $advertise->id;
         $trade->sender_id = $this->user->id;
         $trade->owner_id = $advertise->user_id;
@@ -153,20 +168,19 @@ class SellCurrenciesController extends Controller
         $trade->receive_amount = $receiveAmount;
         $trade->status = 0;
         $trade->payment_method_id = $method->id;
-        // $trade->payment_info_id = $info->id;
         $trade->payment_window = optional($advertise->paymentWindow)->name ?? 0;
         $trade->hash_slug = Str::uuid();
         $trade->payment_details = $advertise->payment_details;
         $trade->terms_of_trade = $advertise->terms_of_trade;
-
+    
         $trade->save();
-
+    
         $user = Auth::user();
         $tradeChat = new TradeChat();
         $tradeChat->description = $information."\n".$request->message;
         $tradeChat->trades_id = $trade->id;
         $user->chats()->save($tradeChat);
-
+    
         $msg = [
             'username' => $user->username,
             'amount' => getAmount($trade->pay_amount),
@@ -180,21 +194,21 @@ class SellCurrenciesController extends Controller
         $firebaseAction = route('user.buyCurrencies.tradeDetails', $trade->hash_slug);
         $this->userPushNotification($trade->owner, 'SEND_TRADE', $msg, $action);
         $this->userFirebasePushNotification($trade->owner, 'SEND_TRADE', $msg, $firebaseAction);
-
+    
         $this->sendMailSms($trade->owner, 'SEND_TRADE', [
             'username' => $user->username,
             'amount' => getAmount($trade->pay_amount),
             'tardeNumber' => $trade->trade_number,
             'currency' => optional($trade->currency)->code ?? 'Null',
         ]);
-
+    
         session()->forget('payment-method');
         session()->forget('user_payment_infoId');
-
-        session()->flash('success', 'Trade request send');
+    
+        session()->flash('success', 'Trade request sent');
         return redirect()->route('user.buyCurrencies.tradeDetails', $trade->hash_slug);
     }
-
+    
     public function gatewayInfo($adsId)
     {
         $advertise = Advertisment::findOrFail($adsId);

@@ -37,9 +37,10 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
 
 
-        $schedule->command('cron:status')->hourly();
+        $schedule->command('cron:status')->daily();
         $schedule->command('crypto-rate:update')->everyThreeMinutes();
-        $schedule->command('fiat-rate:update')->everyFourHours();
+        $schedule->command('fiat-rate:update')->dailyAt(8)->twiceDaily(14, 20);
+        
     }
 
     /**
