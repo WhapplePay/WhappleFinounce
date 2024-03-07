@@ -20,7 +20,7 @@
   'sms_notification' => 0,
   'push_notification' => 0,
   'error_log' => 1,
-  'strong_password' => 0,
+  'strong_password' => 1,
   'registration' => 1,
   'address_verification' => 1,
   'identity_verification' => 1,

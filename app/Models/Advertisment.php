@@ -54,6 +54,11 @@ class Advertisment extends Model
     {
         return $this->hasMany(Feedback::class, 'advertisement_id', 'id')->orderBy('id', 'desc');
     }
+    public function feedback()
+    {
+        return $this->hasMany(Feedback::class, 'advertisement_id', 'id')->where('creator_id', );
+    }
+
 
     public function userfeedbacks()
     {

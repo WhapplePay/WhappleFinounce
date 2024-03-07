@@ -112,7 +112,7 @@ class BuyCurrenciesController extends Controller
         ->first();
 
     if ($existingTrade) {
-        session()->flash('error', 'Another user has already placed a trade on this advertisement. Please choose another one.');
+        session()->flash('error', 'Another user has already placed a trade on this advertisement. Please be patient or choose another trade.');
         return redirect()->back();
     }
         if ($validate->fails()) {

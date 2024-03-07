@@ -61,8 +61,9 @@ class HomeController extends Controller
             $query->where("sender_id", $userid)
                 ->orWhere("owner_id", $userid);
         })
+        // OR status = 6 OR status = 7 
             ->selectRaw('COUNT(id) AS totalTrade')
-            ->selectRaw('COUNT(CASE WHEN status = 0 OR status = 1 OR status = 5 OR status = 6 OR status = 7 THEN id END) AS runningTrade')
+            ->selectRaw('COUNT(CASE WHEN status = 0 OR status = 1 OR status = 5 THEN id END) AS runningTrade')
             ->selectRaw('COUNT(CASE WHEN status = 3 OR status = 4 OR status = 8 THEN id END) AS completeTrade')
             ->orderBy('id', 'desc')
             ->get()->toArray())->collapse();
@@ -426,9 +427,9 @@ class HomeController extends Controller
             "link" => route('admin.user.withdrawal', $user->id),
             "icon" => "fa fa-money-bill-alt "
         ];
-        // $firebaseAction = route('admin.user.withdrawal', $user->id);
-        // $this->adminPushNotification('PAYOUT_REQUEST', $msg, $action);
-        // $this->adminFirebasePushNotification('PAYOUT_REQUEST', $msg, $firebaseAction);
+        $firebaseAction = route('admin.user.withdrawal', $user->id);
+        $this->adminPushNotification('PAYOUT_REQUEST', $msg, $action);
+        $this->adminFirebasePushNotification('PAYOUT_REQUEST', $msg, $firebaseAction);
         session()->flash('success', 'Payout request Successfully Submitted. Wait For Confirmation.');
 
         return redirect()->route('user.payout.history');

@@ -118,8 +118,8 @@ class TradeController extends Controller
         $sellerTrx = strRandom(12);
         BasicService::makeTransaction($seller, getAmount($trade->receive_amount), '0', '+', $sellerTrx, 'Crypto amount returned by system to seller', optional($trade->receiverCurrency)->code);
 
-        $buyerTrx = strRandom(12);
-        BasicService::makeTransaction($buyer, getAmount($trade->receive_amount), '0', '-', $buyerTrx, 'Crypto amount returned by system to seller', optional($trade->receiverCurrency)->code);
+        // $buyerTrx = strRandom(12);
+        // BasicService::makeTransaction($buyer, getAmount($trade->receive_amount), '0', '-', $buyerTrx, 'Crypto amount returned by system to seller', optional($trade->receiverCurrency)->code);
 
         $trade->save();
 

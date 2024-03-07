@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Stevebauman\Purify\Facades\Purify;
+use App\Models\Feedback;
 use Facades\App\Services\BasicService;
 
 class BuyCurrenciesController extends Controller
@@ -28,7 +29,8 @@ class BuyCurrenciesController extends Controller
 {
     $search = $request->all();
 
-    $buyLists = Advertisment::with(['fiatCurrency', 'cryptoCurrency', 'user', 'paymentWindow'])
+    $buyLists = Advertisment::with(['fiatCurrency', 'cryptoCurrency', 'user', 'paymentWindow', 'feedbacks'])
+    
     ->where('type', 'sell')
     ->when($currencyId != null, function ($query) use ($currencyId) {
         return $query->where("crypto_id", $currencyId);
@@ -54,6 +56,7 @@ class BuyCurrenciesController extends Controller
             $qq->where('address', 'LIKE', '%' . $search['location'] . '%');
         });
     })
+    // ->where(Feedback::where(["creator_id" => $request->user_id])->where('position', 'LIKE', '%like%')->count())
     ->orderBy('id', 'desc')
     ->paginate(config('basic.paginate'));
 
@@ -62,7 +65,7 @@ class BuyCurrenciesController extends Controller
     $gateways = Gateway::where('status', 1)->orderBy('name')->get();
     $locations = User::select('address')->where('status', 1)->orderBy('address')->groupBy('address')->get();
     $buyCurrencyLists = Advertisment::where('type', 'sell')->where('status', 1)->where('user_id', '!=', $request->user_id)->with('cryptoCurrency')->groupBy('crypto_id')->get();
-
+    // $totalTradeRate =  Feedback::where(["creator_id" => $request->user_id])->where('position', 'LIKE', '%like%')->count();
     return response()->json([
         'status' => 200,
         'buyLists' => $buyLists,

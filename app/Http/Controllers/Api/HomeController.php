@@ -7,6 +7,7 @@ use App\Models\Advertisment;
 use App\Models\Trade;
 use App\Models\Transaction;
 use App\Models\Fund;
+// use App\Models\Feedback;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
