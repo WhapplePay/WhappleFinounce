@@ -36,7 +36,7 @@ class HomeController extends Controller
                     ->orWhere("owner_id", $userid);
             })
             ->orderBy('id', 'desc')
-            ->limit(10)
+            ->limit(8)
             ->get();
 
         $data = [
@@ -45,7 +45,7 @@ class HomeController extends Controller
             'recentTrades' => $recentTrades,
         ];
 
-        return response()->json($data);
+        return response()->json([ "status" => 200, "data" => $data]);
     }
 
     public function transaction(Request $request)

@@ -24,6 +24,56 @@ class BuyCurrenciesController extends Controller
 {
     use Upload, Notify;
 
+    public function index(Request $request, $currencyCode = null, $currencyId = null)
+{
+    $search = $request->all();
+
+    $buyLists = Advertisment::with(['fiatCurrency', 'cryptoCurrency', 'user', 'paymentWindow'])
+    ->where('type', 'sell')
+    ->when($currencyId != null, function ($query) use ($currencyId) {
+        return $query->where("crypto_id", $currencyId);
+    })
+    ->where('status', 1)->where('user_id', '!=', $request->user_id)
+    ->when(isset($search['seller']), function ($query) use ($search) {
+        $query->whereHas('user', function ($qq) use ($search) {
+            $qq->where('username', 'LIKE', '%' . $search['seller'] . '%')
+                ->orWhere('email', 'LIKE', '%' . $search['seller'] . '%');
+        });
+    })
+    ->when(isset($search['crypto']), function ($query) use ($search) {
+        return $query->where("crypto_id", $search['crypto']);
+    })
+    ->when(isset($search['fiat']), function ($query) use ($search) {
+        return $query->where("fiat_id", $search['fiat']);
+    })
+    ->when(isset($search['gateway']), function ($query) use ($search) {
+        return $query->whereJsonContains("gateway_id", $search['gateway']);
+    })
+    ->when(isset($search['location']), function ($query) use ($search) {
+        $query->whereHas('user', function ($qq) use ($search) {
+            $qq->where('address', 'LIKE', '%' . $search['location'] . '%');
+        });
+    })
+    ->orderBy('id', 'desc')
+    ->paginate(config('basic.paginate'));
+
+    $cryptos = Currency::where('status', 1)->where('flag', 1)->orderBy('name')->get();
+    $fiats = Currency::where('status', 1)->where('flag', 0)->orderBy('name')->get();
+    $gateways = Gateway::where('status', 1)->orderBy('name')->get();
+    $locations = User::select('address')->where('status', 1)->orderBy('address')->groupBy('address')->get();
+    $buyCurrencyLists = Advertisment::where('type', 'sell')->where('status', 1)->where('user_id', '!=', $request->user_id)->with('cryptoCurrency')->groupBy('crypto_id')->get();
+
+    return response()->json([
+        'status' => 200,
+        'buyLists' => $buyLists,
+        'cryptos' => $cryptos,
+        'fiats' => $fiats,
+        'gateways' => $gateways,
+        'locations' => $locations,
+        'buyCurrencyLists' => $buyCurrencyLists,
+    ]);
+}
+
     public function buyTradeRqst(Request $request)
     {
         try {

@@ -47,6 +47,7 @@ Route::group(['prefix' => 'coin'], function () {
     Route::get('/fund-history', [HomeController::class, 'fundHistory']);
     Route::get('/user-transactions', [HomeController::class, 'transaction']);
     Route::post('/login', [LoginController::class, 'login']);
+    Route::get('/buy-currencies/all', [BuyCurrenciesController::class, 'index']);
     Route::post('/buy-currencies/buy-trade-request', [BuyCurrenciesController::class, 'buyTradeRqst']); //able to work when a user click the buy button
     Route::post('/buy-currencies/send-trade-request', [BuyCurrenciesController::class, 'sendTradeRqst']); // when user has filled the form and submited
     Route::get('/buy-currencies/trade-details/{hash_slug}', [BuyCurrenciesController::class, 'tradeDetails']);
