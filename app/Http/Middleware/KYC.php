@@ -24,13 +24,16 @@ class KYC
 
         if($basic->identity_verification == 1 && Auth::user()->identity_verify != '2'){
             $validator->errors()->add('identity', '1');
-            return redirect()->route('user.profile')->withErrors($validator)->withInput();
+            session()->flash('error', 'Please you must verify you identity before performing that action ');
+            return redirect()->route('user.identityVerify')->withErrors($validator)->withInput();
         }
 
-        if($basic->address_verification == 1 && Auth::user()->address_verify != '2'){
-            $validator->errors()->add('addressVerification', '1');
-            return redirect()->route('user.profile')->withErrors($validator)->withInput();
-        }
+        // if ($basic->address_verification == 1 && Auth::user()->address_verify != '2') {
+        //     $validator->errors()->add('addressVerification', '1');
+        //     session()->flash('error', 'Please you must verify you address localisation before performing that action ');
+        //     return redirect()->route('user.addressVerification')->withErrors($validator)->withInput();
+        // }
+        
 
         return $next($request);
     }

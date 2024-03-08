@@ -1,19 +1,19 @@
-<?php $__env->startSection('title','Fiat Currency List'); ?>
+<?php $__env->startSection('title','Crypto Currency List'); ?>
 
 <?php $__env->startSection('content'); ?>
     <div class="row">
         <div class="col-md-7">
             <div class="card card-primary m-0 m-md-4 my-4 m-md-0 shadow">
                 <div class="card-body">
-                    <form method="post" action="<?php echo e(route('admin.fiatControl.action')); ?>" class="needs-validation base-form">
+                    <form method="post" action="<?php echo e(route('admin.cryptoControl.action')); ?>" class="needs-validation base-form">
                         <?php echo csrf_field(); ?>
                         <div class="row my-3">
                             <div class="form-group col-md-6">
-                                <label class="text-dark"><?php echo app('translator')->get('Currency Layer Access Key'); ?></label>
-                                <input type="text" value='<?php echo e(old('fiat_currency_api',$control->fiat_currency_api)); ?>'
-                                       name='fiat_currency_api'
+                                <label class="text-dark"><?php echo app('translator')->get('Coin Market Cap App Key'); ?></label>
+                                <input type="text" value='<?php echo e(old('crypto_currency_api',$control->crypto_currency_api)); ?>'
+                                       name='crypto_currency_api'
                                        required="required" class="form-control ">
-                                <?php $__errorArgs = ['fiat_currency_api'];
+                                <?php $__errorArgs = ['crypto_currency_api'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -28,11 +28,11 @@ unset($__errorArgs, $__bag); ?>
                             <div class="form-group col-md-6">
                                 <label class="text-dark"><?php echo app('translator')->get('Rate Update'); ?></label>
                                 <div class="custom-switch-btn">
-                                    <input type='hidden' value='1' name='fiat_currency_status'>
-                                    <input type="checkbox" name="fiat_currency_status" class="custom-switch-checkbox"
-                                           id="fiat_currency_status"
-                                           value="0" <?php echo e(($control->fiat_currency_status == 0)?'checked':''); ?> >
-                                    <label class="custom-switch-checkbox-label" for="fiat_currency_status">
+                                    <input type='hidden' value='1' name='crypto_currency_status'>
+                                    <input type="checkbox" name="crypto_currency_status" class="custom-switch-checkbox"
+                                           id="crypto_currency_status"
+                                           value="0" <?php echo e(($control->crypto_currency_status == 0?'checked':'')); ?> >
+                                    <label class="custom-switch-checkbox-label" for="crypto_currency_status">
                                         <span class="custom-switch-checkbox-inner"></span>
                                         <span class="custom-switch-checkbox-switch"></span>
                                     </label>
@@ -53,26 +53,21 @@ unset($__errorArgs, $__bag); ?>
                 <div class="card-body">
                     <div class="row align-items-center justify-content-between mb-3">
                         <div class="col-md-12">
-                            <h4 class="card-title  font-weight-bold"><?php echo app('translator')->get('Currency Layer Instructions
-'); ?></h4>
+                            <h4 class="card-title  font-weight-bold"><?php echo app('translator')->get('Coin Market Cap Instructions'); ?></h4>
                         </div>
                     </div>
-                    <?php echo app('translator')->get("Currencylayer provides a simple REST API with real-time and historical exchange rates for 168 world currencies,delivering currency pairs in universally usable JSON format - compatible with any of your applications."); ?>
-                    <br><br>
-                    <?php echo app('translator')->get("Spot exchange rate data is retrieved from several major forex data providers in real-time, validated,processed and delivered hourly, Every 10 minutes, or even within the 60-second market window."); ?>
-
-                    <a href="https://currencylayer.com/product" target="_blank"><?php echo app('translator')->get('Create an account'); ?>
+                    <?php echo app('translator')->get("CoinMarketCap is the world's most-referenced price-tracking website for cryptoassets in the rapidly growing cryptocurrency space. Its mission is to make crypto discoverable and efficient globally by empowering retail users with unbiased, high quality and accurate information for drawing their own informed conclusions. Get your free API keys"); ?>
+                    <a href="https://dashboard.pusher.com/accounts/sign_up" target="_blank"><?php echo app('translator')->get('Create an account'); ?>
                         <i class="fas fa-external-link-alt"></i></a>
                 </div>
             </div>
         </div>
     </div>
 
-
     <div class="card card-primary m-0 m-md-4 my-4 m-md-0 shadow">
         <div class="card-body">
             <div class="media justify-content-between mb-4">
-                <a href="<?php echo e(route('admin.createFiat')); ?>" class="btn btn-sm btn-primary mr-2">
+                <a href="<?php echo e(route('admin.createCrypto')); ?>" class="btn btn-sm btn-primary mr-2">
                     <span><i class="fa fa-plus-circle"></i> <?php echo app('translator')->get('Add New'); ?></span>
                 </a>
             </div>
@@ -105,7 +100,7 @@ unset($__errorArgs, $__bag); ?>
 
                         <th scope="col"><?php echo app('translator')->get('SL No.'); ?></th>
                         <th scope="col"><?php echo app('translator')->get('Name'); ?></th>
-                        <th scope="col"><?php echo app('translator')->get('Rate'); ?> <small>(<?php echo app('translator')->get('per USD'); ?>)</small></th>
+                        <th scope="col"><?php echo app('translator')->get('Rate'); ?> <small></small></th>
                         <th scope="col" class="text-center"><?php echo app('translator')->get('Status'); ?></th>
                         <th scope="col" class="text-center"><?php echo app('translator')->get('Action'); ?></th>
                     </tr>
@@ -127,19 +122,19 @@ unset($__errorArgs, $__bag); ?>
                                             src="<?php echo e(getFile(config('location.currency.path') . $item->image)); ?>"
                                             alt="user" class="rounded-circle" width="35" height="35"></div>
                                     <div class="mr-3">
-                                        <h5 class="text-dark mb-0 font-weight-medium"><?php echo app('translator')->get($item->name); ?></h5>
+                                        <h5 class="text-dark mb-0 font-16 font-weight-medium"><?php echo app('translator')->get($item->name); ?></h5>
                                     </div>
                                 </div>
                             </td>
-                            <td data-label="<?php echo app('translator')->get('Rate'); ?>">
-                                <span class="text-dark font-weight-bold"><?php echo e($item->symbol); ?><?php echo e($item->rate+0); ?>
-
+                            <td data-label="<?php echo app('translator')->get('Rate'); ?>" class="w-15">
+                                <span
+                                    class=" font-weight-bold"> 1 <?php echo e($item->code); ?> = <?php echo e(getAmount($item->rate,2)); ?> <?php echo app('translator')->get('USD'); ?>
                             </td>
-                            <td data-label="<?php echo app('translator')->get('Status'); ?>">
+                            <td data-label="<?php echo app('translator')->get('Status'); ?>" class="text-center">
                                 <?php echo app('translator')->get($item->statusMessage); ?>
                             </td>
 
-                            <td data-label="<?php echo app('translator')->get('Action'); ?>">
+                            <td data-label="<?php echo app('translator')->get('Action'); ?>" class="text-center">
 
                                 <div class="dropdown show">
                                     <a class="dropdown-toggle p-3" href="#" id="dropdownMenuLink" data-toggle="dropdown"
@@ -147,17 +142,15 @@ unset($__errorArgs, $__bag); ?>
                                         <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-
-                                        <a class="dropdown-item" href="<?php echo e(route('admin.editFiat',$item->id)); ?>">
+                                        <a class="dropdown-item" href="<?php echo e(route('admin.editCrypto',$item->id)); ?>">
                                             <i class="fa fa-edit text-warning pr-2"
                                                aria-hidden="true"></i> <?php echo app('translator')->get('Edit'); ?>
                                         </a>
 
                                         <a class="dropdown-item notiflix-confirm" href="javascript:void(0)"
                                            data-target="#delete-modal"
-                                           data-route="<?php echo e(route('admin.deleteFiat',$item->id)); ?>"
-                                           data-toggle="modal"
-                                        >
+                                           data-route="<?php echo e(route('admin.deleteCrypto',$item->id)); ?>"
+                                           data-toggle="modal">
                                             <i class="fa fa-trash-alt text-danger pr-2"
                                                aria-hidden="true"></i> <?php echo app('translator')->get('Delete'); ?>
                                         </a>
@@ -221,28 +214,6 @@ unset($__errorArgs, $__bag); ?>
         </div>
     </div>
 
-    <!-- Rate Update Modal -->
-    <div class="modal fade" id="rate_update" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header modal-colored-header bg-primary">
-                    <h5 class="modal-title"><?php echo app('translator')->get('Rate Update Confirmation'); ?></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
-                </div>
-                <div class="modal-body">
-                    <p><?php echo app('translator')->get("Are you really want to Update Rate"); ?></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-dismiss="modal"><span><?php echo app('translator')->get('No'); ?></span></button>
-                    <form action="" method="post">
-                        <?php echo csrf_field(); ?>
-                        <a href="" class="btn btn-primary rate-update"><span><?php echo app('translator')->get('Yes'); ?></span></a>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Delete Modal -->
     <div id="delete-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="primary-header-modalLabel"
          aria-hidden="true">
@@ -268,8 +239,51 @@ unset($__errorArgs, $__bag); ?>
             </div>
         </div>
     </div>
+    <!-- Modal for Rate update  -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content ">
+                <div class="modal-header modal-colored-header bg-primary">
+                    <h4 class="modal-title" id="myModalLabel"><?php echo app('translator')->get('Currencylayer rate API'); ?></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class=""><?php echo e(trans('Get your rate API key from')); ?> <a
+                            href="https://min-api.cryptocompare.com"><?php echo e(trans('min-api.cryptocompare.com')); ?></a></p>
 
+                    <p class="text-dark"> <?php echo e(trans('Set up this Cron job command on your server to get update rate')); ?>
 
+                        <br>
+                        <code> <?php echo e(trans('curl -s')); ?> <?php echo e(route('cron')); ?></code></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo app('translator')->get('Close'); ?></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Rate Update Modal -->
+    <div class="modal fade" id="rate_update" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-colored-header bg-primary">
+                    <h5 class="modal-title"><?php echo app('translator')->get('Rate Update Confirmation'); ?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                </div>
+                <div class="modal-body">
+                    <p><?php echo app('translator')->get("Are you really want to Update Rate"); ?></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-dismiss="modal"><span><?php echo app('translator')->get('No'); ?></span></button>
+                    <form action="" method="post">
+                        <?php echo csrf_field(); ?>
+                        <a href="" class="btn btn-primary rate-update"><span><?php echo app('translator')->get('Yes'); ?></span></a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php $__env->stopSection(); ?>
 <?php $__env->startPush('style-lib'); ?>
     <link href="<?php echo e(asset('assets/admin/css/dataTables.bootstrap4.css')); ?>" rel="stylesheet">
@@ -331,7 +345,7 @@ unset($__errorArgs, $__bag); ?>
 
             $.ajax({
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')},
-                url: "<?php echo e(route('admin.fiat-active')); ?>",
+                url: "<?php echo e(route('admin.crypto-active')); ?>",
                 data: {strIds: strIds},
                 datatType: 'json',
                 type: "post",
@@ -353,16 +367,17 @@ unset($__errorArgs, $__bag); ?>
             var strIds = allVals;
             $.ajax({
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')},
-                url: "<?php echo e(route('admin.fiat-deactive')); ?>",
+                url: "<?php echo e(route('admin.crypto-deactive')); ?>",
                 data: {strIds: strIds},
                 datatType: 'json',
                 type: "post",
                 success: function (data) {
                     location.reload();
+
                 }
             });
         });
-        //update rate
+
         $(document).on('click', '.rate-update', function (e) {
             e.preventDefault();
             var allVals = [];
@@ -374,7 +389,7 @@ unset($__errorArgs, $__bag); ?>
 
             $.ajax({
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')},
-                url: "<?php echo e(route('admin.fiatRate')); ?>",
+                url: "<?php echo e(route('admin.cryptoRate')); ?>",
                 data: {strIds: strIds},
                 datatType: 'json',
                 type: "post",
@@ -386,4 +401,4 @@ unset($__errorArgs, $__bag); ?>
     </script>
 <?php $__env->stopPush(); ?>
 
-<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/whapplecoins/resources/views/admin/currency/fiat/list.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /opt/lampp/htdocs/whapplecoins/resources/views/admin/currency/crypto/list.blade.php ENDPATH**/ ?>

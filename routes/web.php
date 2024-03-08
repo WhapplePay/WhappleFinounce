@@ -28,7 +28,7 @@ Route::group(['middleware' => ['guest']], function () {
     Route::get('register/{sponsor?}', 'Auth\RegisterController@sponsor')->name('register.sponsor');
 });
 
-Route::group(['middleware' => ['auth'], 'prefix' => 'user', 'as' => 'user.'], function () {
+Route::group(['middleware' => ['auth'   ], 'prefix' => 'user', 'as' => 'user.'], function () {
     Route::get('/check', 'User\VerificationController@check')->name('check');
     Route::get('/resend_code', 'User\VerificationController@resendCode')->name('resendCode');
     Route::post('/mail-verify', 'User\VerificationController@mailVerify')->name('mailVerify');
@@ -48,42 +48,42 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'user', 'as' => 'user.'], fu
         Route::get('/settings/notify/active/{id}', 'User\SettingController@settingNotifyActive')->name('list.setting.notify.active');
         Route::get('/settings/notify/inactive/{id}', 'User\SettingController@settingNotifyInactive')->name('list.setting.notify.inactive');
 
-        //Advertisements
-        Route::get('/advertisments', 'User\AdvertismentsController@index')->name('advertisements.list');
-        Route::get('/advertisments/create', 'User\AdvertismentsController@create')->name('advertisements.create');
-        Route::post('/advertisments/store', 'User\AdvertismentsController@store')->name('advertisements.store');
-        Route::get('/advertisments/edit/{id}', 'User\AdvertismentsController@edit')->name('advertisements.edit');
-        Route::post('/advertisments/update/{id}', 'User\AdvertismentsController@update')->name('advertisements.update');
-        Route::post('/advertisments/enable/{id}', 'User\AdvertismentsController@enable')->name('advertisements.enable');
-        Route::post('/advertisments/disable/{id}', 'User\AdvertismentsController@disable')->name('advertisements.disable');
+        // //Advertisements
+        // Route::get('/advertisments', 'User\AdvertismentsController@index')->name('advertisements.list');
+        // Route::get('/advertisments/create', 'User\AdvertismentsController@create')->name('advertisements.create');
+        // Route::post('/advertisments/store', 'User\AdvertismentsController@store')->name('advertisements.store');
+        // Route::get('/advertisments/edit/{id}', 'User\AdvertismentsController@edit')->name('advertisements.edit');
+        // Route::post('/advertisments/update/{id}', 'User\AdvertismentsController@update')->name('advertisements.update');
+        // Route::post('/advertisments/enable/{id}', 'User\AdvertismentsController@enable')->name('advertisements.enable');
+        // Route::post('/advertisments/disable/{id}', 'User\AdvertismentsController@disable')->name('advertisements.disable');
 
-        Route::post('/advertisments/getFiat', 'User\AdvertismentsController@getFiat')->name('getFiat');
+        // Route::post('/advertisments/getFiat', 'User\AdvertismentsController@getFiat')->name('getFiat');
 
         //Feedback
         Route::post('/feedback', 'User\AdvertismentsController@feedback')->name('advertisements.feedback');
         Route::get('/feedback/{id}', 'User\AdvertismentsController@feedbackList')->name('feedback.list');
 
-        //Buy Currencies
-        Route::get('/buy/{currencyCode?}/{currencyId?}', 'User\BuyCurrenciesController@index')->name('buyCurrencies.list');
-        Route::get('/buy/trade/request/{advertiseId}', 'User\BuyCurrenciesController@buyTradeRqst')->name('buyCurrencies.tradeRqst');
-        Route::post('/buy/trade-request/send', 'User\BuyCurrenciesController@sendTradeRqst')->name('buyCurrencies.trade.send');
-        Route::get('/trade/details/{hash_slug}', 'User\BuyCurrenciesController@tradeDetails')->name('buyCurrencies.tradeDetails');
+        // //Buy Currencies
+        // Route::get('/buy/{currencyCode?}/{currencyId?}', 'User\BuyCurrenciesController@index')->name('buyCurrencies.list');
+        // Route::get('/buy/trade/request/{advertiseId}', 'User\BuyCurrenciesController@buyTradeRqst')->name('buyCurrencies.tradeRqst');
+        // Route::post('/buy/trade-request/send', 'User\BuyCurrenciesController@sendTradeRqst')->name('buyCurrencies.trade.send');
+        // Route::get('/trade/details/{hash_slug}', 'User\BuyCurrenciesController@tradeDetails')->name('buyCurrencies.tradeDetails');
 
-        //Sell Currencies
-        Route::get('/sell/{currencyCode?}/{currencyId?}', 'User\SellCurrenciesController@index')->name('sellCurrencies.list');
-        Route::get('/sell/trade/request/{advertiseId}', 'User\SellCurrenciesController@sellTradeRqst')->name('sellCurrencies.tradeRqst');
-        Route::post('/sell/trade-request/send', 'User\SellCurrenciesController@sendTradeRqst')->name('sellCurrencies.trade.send');
-        Route::post('/sell/trade-request/fetch-info', 'User\SellCurrenciesController@fetchPaymentInfo')->name('sellCurrencies.FetchPaymentInfo');
+        // //Sell Currencies
+        // Route::get('/sell/{currencyCode?}/{currencyId?}', 'User\SellCurrenciesController@index')->name('sellCurrencies.list');
+        // Route::get('/sell/trade/request/{advertiseId}', 'User\SellCurrenciesController@sellTradeRqst')->name('sellCurrencies.tradeRqst');
+        // Route::post('/sell/trade-request/send', 'User\SellCurrenciesController@sendTradeRqst')->name('sellCurrencies.trade.send');
+        // Route::post('/sell/trade-request/fetch-info', 'User\SellCurrenciesController@fetchPaymentInfo')->name('sellCurrencies.FetchPaymentInfo');
 
-        //Credentials Set
-        Route::get('/sell/gateway/add/{adsId}', 'User\SellCurrenciesController@gatewayInfo')->name('sellCurrencies.gatewayInfo');
-        Route::post('/sell/gateway/save', 'User\SellCurrenciesController@gatewayInfoSave')->name('sellCurrencies.gatewayInfoSave');
-        Route::post('/sell/gateway/update/{id}', 'User\SellCurrenciesController@gatewayInfoUpdate')->name('sellCurrencies.gatewayInfoUpdate');
-        Route::post('/sell/gateway/select', 'User\SellCurrenciesController@gatewaySelect')->name('sellCurrencies.gatewaySelect');
+        // //Credentials Set
+        // Route::get('/sell/gateway/add/{adsId}', 'User\SellCurrenciesController@gatewayInfo')->name('sellCurrencies.gatewayInfo');
+        // Route::post('/sell/gateway/save', 'User\SellCurrenciesController@gatewayInfoSave')->name('sellCurrencies.gatewayInfoSave');
+        // Route::post('/sell/gateway/update/{id}', 'User\SellCurrenciesController@gatewayInfoUpdate')->name('sellCurrencies.gatewayInfoUpdate');
+        // Route::post('/sell/gateway/select', 'User\SellCurrenciesController@gatewaySelect')->name('sellCurrencies.gatewaySelect');
 
-        //chat
-        Route::get('push-chat-show/{hashSlug}', 'ChatNotificationController@show')->name('push.chat.show');
-        Route::post('push-chat-newMessage', 'ChatNotificationController@newMessage')->name('push.chat.newMessage');
+        // //chat
+        // Route::get('push-chat-show/{hashSlug}', 'ChatNotificationController@show')->name('push.chat.show');
+        // Route::post('push-chat-newMessage', 'ChatNotificationController@newMessage')->name('push.chat.newMessage');
 
 
         //Trade List
@@ -95,17 +95,17 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'user', 'as' => 'user.'], fu
 
         //Wallet
         Route::get('/wallet/{crypto_id?}', 'User\WalletController@index')->name('wallet.list');
-        Route::post('/wallet/generate', 'User\WalletController@walletGenerate')->name('wallet.generate');
+        // Route::post('/wallet/generate', 'User\WalletController@walletGenerate')->name('wallet.generate');
 
 
         Route::get('/identity/verification', 'User\HomeController@identityVerify')->name('identityVerify');
         Route::post('/verificationSubmit', 'User\HomeController@verificationSubmit')->name('verificationSubmit');
 
-        //transaction
-        Route::get('/transaction/{code?}', 'User\HomeController@transaction')->name('transaction');
-        Route::get('/transaction-search', 'User\HomeController@transactionSearch')->name('transaction.search');
-        Route::get('fund-history', 'User\HomeController@fundHistory')->name('fund-history');
-        Route::get('fund-history-search', 'User\HomeController@fundHistorySearch')->name('fund-history.search');
+        // //transaction
+        // Route::get('/transaction/{code?}', 'User\HomeController@transaction')->name('transaction');
+        // Route::get('/transaction-search', 'User\HomeController@transactionSearch')->name('transaction.search');
+        // Route::get('fund-history', 'User\HomeController@fundHistory')->name('fund-history');
+        // Route::get('fund-history-search', 'User\HomeController@fundHistorySearch')->name('fund-history.search');
 
 
         // TWO-FACTOR SECURITY
@@ -117,11 +117,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'user', 'as' => 'user.'], fu
         Route::get('push-notification-show', 'SiteNotificationController@show')->name('push.notification.show');
         Route::get('push.notification.readAll', 'SiteNotificationController@readAll')->name('push.notification.readAll');
         Route::get('push-notification-readAt/{id}', 'SiteNotificationController@readAt')->name('push.notification.readAt');
-
-
-        Route::get('/payout', 'User\HomeController@payoutMoney')->name('payout.money');
-        Route::post('/payout', 'User\HomeController@payoutMoneyRequest')->name('payout.moneyRequest');
-
+        
         //Deposit History
         Route::get('deposit-history', 'User\HomeController@depositHistory')->name('deposit.history');
 
@@ -148,7 +144,52 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'user', 'as' => 'user.'], fu
             Route::get('/download/{ticket}', 'User\SupportController@download')->name('download');
         });
 
+        Route::middleware('kyc')->group(function () {
 
+
+            Route::get('/payout', 'User\HomeController@payoutMoney')->name('payout.money');
+            Route::post('/payout', 'User\HomeController@payoutMoneyRequest')->name('payout.moneyRequest');
+    
+               //transaction
+        Route::get('/transaction/{code?}', 'User\HomeController@transaction')->name('transaction');
+        Route::get('/transaction-search', 'User\HomeController@transactionSearch')->name('transaction.search');
+        Route::get('fund-history', 'User\HomeController@fundHistory')->name('fund-history');
+        Route::get('fund-history-search', 'User\HomeController@fundHistorySearch')->name('fund-history.search');
+        Route::post('/wallet/generate', 'User\WalletController@walletGenerate')->name('wallet.generate');
+   //Buy Currencies
+   Route::get('/buy/{currencyCode?}/{currencyId?}', 'User\BuyCurrenciesController@index')->name('buyCurrencies.list');
+   Route::get('/buy/trade/request/{advertiseId}', 'User\BuyCurrenciesController@buyTradeRqst')->name('buyCurrencies.tradeRqst');
+   Route::post('/buy/trade-request/send', 'User\BuyCurrenciesController@sendTradeRqst')->name('buyCurrencies.trade.send');
+   Route::get('/trade/details/{hash_slug}', 'User\BuyCurrenciesController@tradeDetails')->name('buyCurrencies.tradeDetails');
+
+   //Sell Currencies
+   Route::get('/sell/{currencyCode?}/{currencyId?}', 'User\SellCurrenciesController@index')->name('sellCurrencies.list');
+   Route::get('/sell/trade/request/{advertiseId}', 'User\SellCurrenciesController@sellTradeRqst')->name('sellCurrencies.tradeRqst');
+   Route::post('/sell/trade-request/send', 'User\SellCurrenciesController@sendTradeRqst')->name('sellCurrencies.trade.send');
+   Route::post('/sell/trade-request/fetch-info', 'User\SellCurrenciesController@fetchPaymentInfo')->name('sellCurrencies.FetchPaymentInfo');
+
+   //Credentials Set
+   Route::get('/sell/gateway/add/{adsId}', 'User\SellCurrenciesController@gatewayInfo')->name('sellCurrencies.gatewayInfo');
+   Route::post('/sell/gateway/save', 'User\SellCurrenciesController@gatewayInfoSave')->name('sellCurrencies.gatewayInfoSave');
+   Route::post('/sell/gateway/update/{id}', 'User\SellCurrenciesController@gatewayInfoUpdate')->name('sellCurrencies.gatewayInfoUpdate');
+   Route::post('/sell/gateway/select', 'User\SellCurrenciesController@gatewaySelect')->name('sellCurrencies.gatewaySelect');
+
+   //chat
+   Route::get('push-chat-show/{hashSlug}', 'ChatNotificationController@show')->name('push.chat.show');
+   Route::post('push-chat-newMessage', 'ChatNotificationController@newMessage')->name('push.chat.newMessage');
+
+   //Advertisements
+   Route::get('/advertisments', 'User\AdvertismentsController@index')->name('advertisements.list');
+   Route::get('/advertisments/create', 'User\AdvertismentsController@create')->name('advertisements.create');
+   Route::post('/advertisments/store', 'User\AdvertismentsController@store')->name('advertisements.store');
+   Route::get('/advertisments/edit/{id}', 'User\AdvertismentsController@edit')->name('advertisements.edit');
+   Route::post('/advertisments/update/{id}', 'User\AdvertismentsController@update')->name('advertisements.update');
+   Route::post('/advertisments/enable/{id}', 'User\AdvertismentsController@enable')->name('advertisements.enable');
+   Route::post('/advertisments/disable/{id}', 'User\AdvertismentsController@disable')->name('advertisements.disable');
+
+   Route::post('/advertisments/getFiat', 'User\AdvertismentsController@getFiat')->name('getFiat');
+
+        });
     });
 });
 
