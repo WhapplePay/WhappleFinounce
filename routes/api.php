@@ -17,7 +17,8 @@ use App\Http\Controllers\Api\{
     WebhookController,
     HomeController,
     LoginController,
-    WhappleFinounceWalletConnectController
+    WhappleFinounceWalletConnectController,
+    WhappleAuthontroller
 
 };
 /*
@@ -89,5 +90,7 @@ Route::group(['prefix' => 'coin'], function () {
         Route::post('/whapplepaydeposit', [WhappleFinounceWalletConnectController::class, 'depositCrypto']);
         Route::post('/whapplepaywithdraw', [WhappleFinounceWalletConnectController::class, 'withdrawCrypto']);
 
-
+    // //WhappleAuthcontollrt endpoint
+    // Route::post('/whapplepay/login', [WhappleAuthontroller::class, 'login']);
+    // Route::post('/whapplepay/register', [WhappleAuthontroller::class, 'register']);
 });

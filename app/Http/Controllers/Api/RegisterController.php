@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Currency; 
+use Illuminate\Validation\Rule;
 
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 class RegisterController extends Controller
 {
    /**
@@ -18,6 +21,7 @@ class RegisterController extends Controller
  */
 protected function create(array $data)
 {
+   
     $basic = (object) config('basic');
 
     $sponsor = $data['sponsor']; 
@@ -62,22 +66,23 @@ protected function create(array $data)
      */
     public function register(Request $request)
     {
-        // Validate the incoming request data
-        $this->validate($request, [
+        
+        Log::info(['data' =>$request->all()]);
+       
+        $validator = Validator::make($request->all(), [
             'firstname' => 'required|string',
             'lastname' => 'required|string',
             'username' => 'required|string|unique:users',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
-            'sponsor' => 'nullable|string', 
+            'phone'      => 'required|unique:users,phone',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
         $user = $this->create($request->all());
-
-        return response()->json([
-            'status' => '200',
-            'data' => $user,
-            'message' => 'Registration successful',
-        ]);
+    
+        return response()->json(['status' => 200, 'message' => 'Registration successfuls']);
     }
 }

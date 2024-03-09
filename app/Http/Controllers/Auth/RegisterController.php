@@ -124,7 +124,7 @@ class RegisterController extends Controller
         $rules['email'] = ['required', 'string', 'email', 'max:255', 'unique:users,email'];
         $rules['country_code'] = ['max:5'];
         $rules['phone_code'] = ['required'];
-        $rules['phone'] = ['required'];
+        $rules['phone'] = ['required', 'string', 'max:255', 'unique:users,phone'];
         return Validator::make($data, $rules, [
             'firstname.required' => 'First Name Field is required',
             'lastname.required' => 'Last Name Field is required',
