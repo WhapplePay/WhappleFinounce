@@ -16,6 +16,8 @@ use App\Models\Transaction;
 use Illuminate\Support\Str;
 
 use Illuminate\Support\Facades\Log;
+
+
 class WhappleFinounceWalletConnectController extends Controller
 {
     public function connect(Request $request){
@@ -47,6 +49,7 @@ class WhappleFinounceWalletConnectController extends Controller
 
     }
 
+
   public function checkConnection(Request $request){
     $user_id = $request->user_id;
     $checkStatus = WhappleFinounce::where('user_id', $user_id)->first();
@@ -57,6 +60,7 @@ class WhappleFinounceWalletConnectController extends Controller
         return response()->json(['status' => 400, 'message' => 'User\'s wallet not connected yet']);
     }
 }
+
 
 public function depositCrypto(Request $request) {
     Log::info($request->all());
@@ -88,9 +92,13 @@ public function depositCrypto(Request $request) {
     if (!$cryptoWallet) {
         return response()->json(['status' => 404, 'message' => 'Crypto wallet not found for the specified user and crypto code']);
     }
+    $charge = 0.05;
+    $percentageCharge =$request->amount * $charge;
+
+    $totalAmount = $request->amount - $percentageCharge;
 
    
-    $cryptoWallet->balance += $request->amount;
+    $cryptoWallet->balance += $totalAmount;
     $cryptoWallet->save();
 
 
@@ -102,8 +110,8 @@ public function depositCrypto(Request $request) {
       Transaction::create([
           'user_id' => $user[0]->id,
           'amount' => $request->amount,
-          'charge' => 0, 
-          'final_balance' => '0.00',
+          'charge' => $percentageCharge, 
+          'final_balance' => $totalAmount,
           'trx_type' => '+',
           'remarks' => $remarks,
           'trx_id' => $transactionId,
@@ -112,6 +120,8 @@ public function depositCrypto(Request $request) {
       ]);
     return response()->json(['status' => 200, 'message' => 'Deposit successful']);
 }
+
+
 
 public function withdrawCrypto(Request $request){
         $request->validate([
@@ -148,8 +158,15 @@ public function withdrawCrypto(Request $request){
             if($request->amount >= $cryptoWallet->balance){
                 return response()->json(['status' => 400, 'message' => 'You don\'t have enough money, trade to get cash']);
             }
-
-            $cryptoWallet->balance -= $request->amount;
+            $charge = 0.05;
+            
+            $percentageCharge =$request->amount * $charge;
+        
+            $totalAmount = $request->amount - $percentageCharge;
+        
+           
+         
+            $cryptoWallet->balance -= $totalAmount;
             $cryptoWallet->save();
         
         
@@ -159,8 +176,8 @@ public function withdrawCrypto(Request $request){
             Transaction::create([
                 'user_id' => $checkUser[0]->id,
                 'amount' => $request->amount,
-                'charge' => 0, 
-                'final_balance' => '0.00',
+                'charge' => $percentageCharge, 
+                'final_balance' => $totalAmount,
                 'trx_type' => '-',
                 'remarks' => $remarks,
                 'trx_id' => $transactionId,
