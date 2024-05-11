@@ -43,7 +43,7 @@ Route::group(['prefix' => 'coin'], function () {
     Route::get('/wallets', [WalletController::class, 'getUserCryptoWallet']); //just get the crypto data
     Route::get('/user-wallets', [WalletController::class, 'wallets']);//get the user wallet id with crypto details
     Route::post('/wallet/generate', [WalletController::class, 'walletGenerate']);
-    Route::get('/', [HomeController::class, 'index']);
+    Route::get('/home', [HomeController::class, 'index']);
     Route::get('/running-trades', [TradeController::class, 'runningTrades']);//navigate to the details page with the token!!
     Route::get('/completed-trades', [TradeController::class, 'completedTrades']);
     Route::get('/fund-history', [HomeController::class, 'fundHistory']);
@@ -91,6 +91,6 @@ Route::group(['prefix' => 'coin'], function () {
         Route::post('/whapplepaywithdraw', [WhappleFinounceWalletConnectController::class, 'withdrawCrypto']);
 
     // //WhappleAuthcontollrt endpoint
-    // Route::post('/whapplepay/login', [WhappleAuthontroller::class, 'login']);
-    // Route::post('/whapplepay/register', [WhappleAuthontroller::class, 'register']);
+    Route::post('/whapplepay/login', [WhappleAuthontroller::class, 'login']);
+    Route::post('/whapplepay/register', [WhappleAuthontroller::class, 'register']);
 });
