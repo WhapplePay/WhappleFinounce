@@ -19,33 +19,33 @@
                                         <i class="fal fa-ellipsis-v"></i>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li>
+                                        {{-- <li>
                                             <a class="dropdown-item text-capitalize deposit btnDeposit"
                                                href="javascript:void(0)"
                                                data-resource="{{$item}}"
                                                data-bs-target="#depositModal"
                                                data-bs-toggle="modal">@lang('generate address')</a>
-                                        </li>
+                                        </li> --}}
 
-                                        <li>
+                                        {{-- <li>
                                             <a class="dropdown-item text-capitalize withdraw btnWithdraw"
                                                href="javascript:void(0)"
                                                title="withdraw"
                                                data-resource="{{$item}}"
                                                data-bs-target="#withdrawModal"
                                                data-bs-toggle="modal">@lang("withdraw")</a>
-                                        </li>
+                                        </li> --}}
 
                                         <li>
                                             <a class="dropdown-item text-capitalize"
                                                href="{{route('user.transaction',optional($item->crypto)->code)}}"
                                                title="withdraw">@lang("transaction")</a>
                                         </li>
-                                        <li>
+                                        {{-- <li>
                                             <a class="dropdown-item text-capitalize"
                                                href="{{route('user.wallet.list',$item->crypto_currency_id)}}"
                                                title="wallet address">@lang("wallet address")</a>
-                                        </li>
+                                        </li> --}}
 
                                     </ul>
                                 </div>
