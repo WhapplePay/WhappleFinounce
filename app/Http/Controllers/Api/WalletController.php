@@ -14,6 +14,7 @@ class WalletController extends Controller
 {
     public function wallets(Request $request)
     {
+        \Log::info(['data'=>$request->all()]);
         $userId = $request->input('user_id');
     
         $userWallets = Wallet::where('user_id', $userId)->with('crypto')->latest()->get();
