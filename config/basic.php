@@ -1,7 +1,7 @@
 <?php return array (
   'site_title' => 'Finounce',
-  'base_color' => '#004080',
-  'secondary_color' => '#3498db',
+  'base_color' => '#d09f08',
+  'secondary_color' => '#f0b90b',
   'time_zone' => 'Africa/Douala',
   'force_ssl' => '0',
   'currency' => 'USD',
@@ -11,7 +11,7 @@
   'fraction_number' => 2,
   'paginate' => 20,
   'tradeCharge' => 2,
-  'trade_extra_time' => 10,
+  'trade_extra_time' => 5,
   'incompleteLimit' => 5,
   'ad_rate_update' => 1,
   'email_verification' => 1,
