@@ -7,6 +7,9 @@ use App\Models\Advertisment;
 use App\Models\Trade;
 use App\Models\Transaction;
 use App\Models\Fund;
+use App\Models\User;
+
+use App\Models\Wallet;
 // use App\Models\Feedback;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,40 +17,65 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $userid = $request->user_id;
-
-        $trades = Trade::where(function ($query) use ($userid) {
-                $query->where("sender_id", $userid)
-                    ->orWhere("owner_id", $userid);
-            })
-            ->selectRaw('COUNT(id) AS totalTrade')
-            ->selectRaw('COUNT(CASE WHEN status IN (0, 1, 5, 6, 7) THEN id END) AS runningTrade')
-            ->selectRaw('COUNT(CASE WHEN status IN (3, 4, 8) THEN id END) AS completeTrade')
-            ->orderBy('id', 'desc')
-            ->first();
-
-        $advertise = Advertisment::where("user_id", $userid)
-            ->selectRaw('COUNT(id) AS totalAdvertise')
-            ->orderBy('id', 'desc')
-            ->first();
-
-        $recentTrades = Trade::with(['sender', 'currency', 'owner', 'receiverCurrency', 'advertise'])
-            ->where(function ($query) use ($userid) {
-                $query->where("sender_id", $userid)
-                    ->orWhere("owner_id", $userid);
-            })
-            ->orderBy('id', 'desc')
-            ->limit(8)
-            ->get();
-
-        $data = [
-            'trades' => $trades,
-            'advertise' => $advertise,
-            'recentTrades' => $recentTrades,
-        ];
-
-        return response()->json([ "status" => 200, "data" => $data]);
+        try {
+            $phoneNumber = $request->phone_number; // Assuming phone number is sent in the request
+    \Log::info(['data'=>$request->all()]);
+            // Fetch user based on the phone number
+            $user = User::where('phone', $phoneNumber)->first();
+    
+            if (!$user) {
+                return response()->json(["status" => 404, "message" => "User not found"]);
+            }
+    
+            $userId = $user->id;
+    
+            $trades = Trade::where(function ($query) use ($userId) {
+                    $query->where("sender_id", $userId)
+                        ->orWhere("owner_id", $userId);
+                })
+                ->selectRaw('COUNT(id) AS totalTrade')
+                ->selectRaw('COUNT(CASE WHEN status IN (0, 1, 5, 6, 7) THEN id END) AS runningTrade')
+                ->selectRaw('COUNT(CASE WHEN status IN (3, 4, 8) THEN id END) AS completeTrade')
+                ->orderBy('id', 'desc')
+                ->first();
+    
+            $advertise = Advertisment::where("user_id", $userId)
+                ->selectRaw('COUNT(id) AS totalAdvertise')
+                ->orderBy('id', 'desc')
+                ->first();
+    
+            $recentTrades = Trade::with(['sender', 'currency', 'owner', 'receiverCurrency', 'advertise'])
+                ->where(function ($query) use ($userId) {
+                    $query->where("sender_id", $userId)
+                        ->orWhere("owner_id", $userId);
+                })
+                ->orderBy('id', 'desc')
+                ->limit(8)
+                ->get();
+    
+            $userWallets = Wallet::where('user_id', $userId)->with('crypto')->latest()->get();
+    
+            $formattedWallets = $userWallets->map(function ($wallet) {
+                $cryptoDetails = $wallet->crypto;
+                return [
+                    'wallet_id' => $wallet->id,
+                    'crypto_id' => $cryptoDetails->id,
+                    'crypto_name' => $cryptoDetails->name,
+                    'crypto_symbol' => $cryptoDetails->symbol,
+                    'balance' => $wallet->balance,
+                ];
+            });
+    
+            $data = [
+                 'wallets' => $formattedWallets,
+            ];
+    
+            return response()->json(["status" => 200, "data" => $data]);
+        } catch (\Exception $e) {
+            return response()->json(["status" => 500, "message" => "Error: " . $e->getMessage()]);
+        }
     }
+    
 
     public function transaction(Request $request)
     {
